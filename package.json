@@ -6,7 +6,8 @@
     "scripts": {
         "start:db": "npx json-server -w db.json",
         "start:server": "parcel index.html",
-        "dev": "concurrently \" npm run start:db \"  \"npm run start:server\" "
+        "start:checking": "tsc --noEmit",
+        "dev": "concurrently \" npm run start:db \"  \"npm run start:server\""
     },
     "keywords": [],
     "author": "",

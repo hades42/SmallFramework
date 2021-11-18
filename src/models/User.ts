@@ -1,19 +1,24 @@
+import axios, { AxiosResponse } from "axios";
+import { entryPoint } from "../index";
+import { Eventing } from "./Eventing";
+
 interface UserProps {
     // "?" means that this interface can have these propreties,
     // but it is stil fine if it doesnt have them
+
+    id?: number;
     name?: string;
     age?: number;
 }
 
-// Type Alias define that "callBack" is an function return nothing
-type CallBack = () => void;
-
 export class User {
+    // Since we only have 1 set rule of event, so every new User will
+    // have the same Eventing class. In the future, if we have more type
+    // of event, we should use a composisiton pattern, by accepting Eventing
+    // class as a paramater for constructor
+    public events: Eventing = new Eventing();
+
     private data: UserProps;
-    // This type show us that events is an object that store
-    // many keys (we dont know the name of the key) that are string
-    // each key has an array of Callback as a value
-    events: { [key: string]: CallBack[] } = {};
 
     constructor(data: UserProps) {
         this.data = data;
@@ -27,24 +32,25 @@ export class User {
         this.data = { ...this.data, ...update };
     }
 
-    // Assign callback function
-    on(eventName: string, callback: CallBack): void {
-        const handlers = this.events[eventName] || [];
-        handlers.push(callback);
-        this.events[eventName] = handlers;
+    // Set the information from db.json
+    fetch(): void {
+        axios
+            .get(`${entryPoint}/users/${this.get("id")}`)
+            .then((res: AxiosResponse): void => {
+                this.set(res.data);
+            });
     }
 
-    // Trigger event inside events
-    trigger(eventName: string): void {
-        const handlers = this.events[eventName];
+    // Save property again
+    save(): void {
+        const id = this.get("id");
 
-        if (!handlers || handlers.length === 0) {
-            return;
+        if (this.get("id")) {
+            // put
+            axios.put(`${entryPoint}/users/${id}`, this.data);
+        } else {
+            // post
+            axios.post(`${entryPoint}/users`, this.data);
         }
-
-        // For each callback, just run it
-        handlers.forEach((callback) => {
-            callback();
-        });
     }
 }
