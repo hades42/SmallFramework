@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 import { entryPoint } from "../index";
 import { Eventing } from "./Eventing";
+import { Sync } from "./Sync";
 
-interface UserProps {
+export interface UserProps {
     // "?" means that this interface can have these propreties,
     // but it is stil fine if it doesnt have them
 
@@ -18,6 +19,8 @@ export class User {
     // class as a paramater for constructor
     public events: Eventing = new Eventing();
 
+    public sync: Sync<UserProps> = new Sync<UserProps>(entryPoint);
+
     private data: UserProps;
 
     constructor(data: UserProps) {
@@ -30,27 +33,5 @@ export class User {
 
     set(update: UserProps): void {
         this.data = { ...this.data, ...update };
-    }
-
-    // Set the information from db.json
-    fetch(): void {
-        axios
-            .get(`${entryPoint}/users/${this.get("id")}`)
-            .then((res: AxiosResponse): void => {
-                this.set(res.data);
-            });
-    }
-
-    // Save property again
-    save(): void {
-        const id = this.get("id");
-
-        if (this.get("id")) {
-            // put
-            axios.put(`${entryPoint}/users/${id}`, this.data);
-        } else {
-            // post
-            axios.post(`${entryPoint}/users`, this.data);
-        }
     }
 }
