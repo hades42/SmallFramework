@@ -26,12 +26,4 @@ export class User {
     constructor(data: UserProps) {
         this.data = data;
     }
-
-    get(propName: string): number | string {
-        return this.data[propName];
-    }
-
-    set(update: UserProps): void {
-        this.data = { ...this.data, ...update };
-    }
 }
