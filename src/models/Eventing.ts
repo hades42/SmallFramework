@@ -8,14 +8,14 @@ export class Eventing {
     events: { [key: string]: CallBack[] } = {};
 
     // Assign callback function
-    on(eventName: string, callback: CallBack): void {
+    on = (eventName: string, callback: CallBack): void => {
         const handlers = this.events[eventName] || [];
         handlers.push(callback);
         this.events[eventName] = handlers;
-    }
+    };
 
     // Trigger event inside events
-    trigger(eventName: string): void {
+    trigger = (eventName: string): void => {
         const handlers = this.events[eventName];
 
         if (!handlers || handlers.length === 0) {
@@ -26,5 +26,5 @@ export class Eventing {
         handlers.forEach((callback) => {
             callback();
         });
-    }
+    };
 }
