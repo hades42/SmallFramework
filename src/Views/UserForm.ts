@@ -1,32 +1,26 @@
 import { User } from "../models/User";
+import { View } from "./View";
 
-export class UserForm {
-    parent: Element;
-    model: User;
-
-    constructor(parent: Element, model: User) {
-        this.parent = parent;
-        this.model = model;
-    }
-
+export class UserForm extends View {
     // return type is an object with key(string) and value : (void function)
     eventsMap(): { [key: string]: () => void } {
         return {
             "click:.set-age": this.onSetAgeClick,
+            "click:.set-name": this.onSetNameClick,
         };
     }
 
-    onButtonClick(): void {
-        console.log("Hi There");
-    }
+    onSetNameClick = (): void => {
+        const input = this.parent.querySelector("input");
+        if (input) {
+            const name = input.value;
+            console.log(name);
+        }
+    };
 
-    onHeaderHover(): void {
-        console.log("change color");
-    }
-
-    onSetAgeClick(): void {
-        console.log("On Set Age");
-    }
+    onSetAgeClick = (): void => {
+        this.model.setRandomAge();
+    };
 
     template(): string {
         return `
@@ -35,7 +29,7 @@ export class UserForm {
                 <div>User name: ${this.model.get("name")}</div>
                 <div>User age: ${this.model.get("age")}</div>
                 <input />
-                <button>Click Me</button>
+                <button class="set-name">Change Name</button>
                 <button class="set-age">Set Random Age</button>
             </div>
     
@@ -54,6 +48,7 @@ export class UserForm {
     }
 
     render(): void {
+        this.parent.innerHTML = "";
         const templateElement = document.createElement("template");
         templateElement.innerHTML = this.template();
 
