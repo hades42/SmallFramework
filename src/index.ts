@@ -1,13 +1,8 @@
+export const entryPoint = "http://localhost:3000/users";
+import { UserForm } from "./Views/UserForm";
 import { User } from "./models/User";
-import axios from "axios";
 
-const entryPoint = "http://localhost:3000";
+const user = User.buildUser({ name: "NAME", age: 20 });
 
-axios
-    .get(`${entryPoint}/users/1`, {})
-    .then((res) => {
-        console.log(res.data);
-    })
-    .catch((error) => {
-        console.log(error);
-    });
+const userForm = new UserForm(document.getElementById("root"), user);
+userForm.render();

@@ -4,6 +4,7 @@ import { Eventing } from "./Eventing";
 import { Sync } from "./Sync";
 import { Attribute } from "./Attribute";
 import { Model } from "./Model";
+import { Collection } from "./Collection";
 
 export interface UserProps {
     // "?" means that this interface can have these propreties,
@@ -22,4 +23,10 @@ export class User extends Model<UserProps> {
             new Sync<UserProps>(entryPoint)
         );
     }
+
+    static buildUserCollection = (): Collection<User, UserProps> => {
+        return new Collection<User, UserProps>(entryPoint, (json: UserProps) =>
+            User.buildUser(json)
+        );
+    };
 }
