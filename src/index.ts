@@ -1,8 +1,18 @@
 export const entryPoint = "http://localhost:3000/users";
-import { UserForm } from "./Views/UserForm";
-import { User } from "./models/User";
+import { UserList } from "./Views/UserList";
+import { Collection } from "./models/Collection";
+import { UserProps, User } from "./models/User";
 
-const user = User.buildUser({ name: "NAME", age: 20 });
+const users = new Collection(entryPoint, (json: UserProps) => {
+    return User.buildUser(json);
+});
 
-const userForm = new UserForm(document.getElementById("root"), user);
-userForm.render();
+users.on("change", () => {
+    const root = document.getElementById("root");
+
+    if (root) {
+        new UserList(root, users).render();
+    }
+});
+
+users.fetch();

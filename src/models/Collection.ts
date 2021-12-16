@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { User } from "./User";
 import { Eventing } from "./Eventing";
 
 export class Collection<T, K> {
